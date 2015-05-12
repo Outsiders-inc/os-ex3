@@ -1,28 +1,52 @@
-int attach_now(int block_num)
+void hash_data(bool print)
 {
-	try
+	Node * toHash = gPreHash->front();
+	char* crypt = generate_hash(toHash->getData(), toHash->getLength(),
+			generate_nonce(toHash->getID(),
+					toHash->getFather()->getID()));
+	toHash->setCryptoData(crypt);
+	if (print)
 	{
-		if (!gIdHandler->idExists(block_num))
-		{
-			return -2;
-		}
-		Node * toAttach = find_pre_hashed_block(block_num);
-		if (toAttach != NULL)
-		{
-			pthread_mutex_lock(&mutex);
-			toAttach->setCryptoData(
-					generate_hash(toAttach->getData(), toAttach->getLength(),
-							generate_nonce(toAttach->getID(),
-									toAttach->getFather()->getID())));
-			gLeaves.push_back(toAttach);
-			gPreHash->remove(toAttach);
-			pthread_mutex_unlock(&mutex);
-			gNumOfBlk++;
-		}
-	} catch (exception& e)
-	{
-		// if "OTHER ERRORS" RETURN -1
-		return -1;
+		cout << crypt << endl;
 	}
-	return 0;
+	else
+	{
+		gLeaves.push_back(toHash);
+		gNumOfBlk++;
+	}
+	gPreHash->pop_front();
+}
+
+
+
+
+void close_chain()
+{
+	prune_chain();
+	//Add flag that this function was called so prune and other func can't be called
+	_close = true;
+	Node* toDelete;
+	Node* father;
+	if (gLeaves.size() == 1)
+	{
+		toDelete = gLeaves.at(0);
+		while (toDelete->getID() != 0)
+		{
+			father = toDelete->getFather();
+			gIdHandler->removeId(toDelete->getID());
+			gNumOfBlk--;
+			delete toDelete;
+			toDelete = father;
+		}
+		delete toDelete;
+	}
+	else
+	{
+		exit(-1);
+	}
+	while(!gPreHash->empty())
+	{
+		hash_data(PRINT);
+	}
+	close_hash_generator();
 }
