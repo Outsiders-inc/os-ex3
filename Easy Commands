@@ -7,4 +7,4 @@ compiling the shit:
 g++ -Wall -std=c++11 IdHandler.h IdHandler.cpp hash.h Node.h Node.cpp general.h blockchainException.h blockchain.h blockchain.cpp test.cpp -o ex3
 ex3
 Running ex3 test:
-g++ -Wall -std=c++11 test.cpp hash.h -L. -lhash -lcrypto -o test
+g++ -Wall -std=c++11 test.cpp hash.h -L. -lhash -lcrypto -lpthread -o test
