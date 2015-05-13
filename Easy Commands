@@ -1,0 +1,10 @@
+getting to the directory in Shahar's library:
+----------------------------------------------
+cd 3rd-year/OS/ex3
+
+compiling the shit:
+-------------------
+g++ -Wall -std=c++11 IdHandler.h IdHandler.cpp hash.h Node.h Node.cpp general.h blockchainException.h blockchain.h blockchain.cpp test.cpp -o ex3
+ex3
+Running ex3 test:
+g++ -Wall -std=c++11 test.cpp hash.h -L. -lhash -lcrypto -o test
